@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RustyMath</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+      #log{
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>RustyMath Demo with WebAssemby</h1>
+    <input type="text" id="expr" />
+    <button id="evalbtn">Evaluate</button>
+    <p id="log"></p>
+    <ul id="notebook"></ul>
+    <script type="module">
+      import initSync, { evaluate_expression } from "./pkg/rustymath.js";
+
+      let state = null;
+      async function init() {
+        await initSync();
+      }
+      document.querySelector("#evalbtn").onclick = async () => {
+        try {
+          if (state === null) {
+            await init();
+            state = "loaded";
+          }
+          document.querySelector("#log").innerText = ""
+          const exp = document.querySelector("#expr").value;
+          const res = await evaluate_expression(exp);
+          let elm = document.createElement("li");
+          elm.innerText = `${exp} = ${res}`;
+          let notebook = document.querySelector("#notebook");
+          notebook.insertBefore(elm, notebook.firstChild);
+        } catch (error) {
+            document.querySelector("#log").innerText = error.toString();
+        }
+      };
+    </script>
+  </body>
+</html>

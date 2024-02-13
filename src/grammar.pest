@@ -1,0 +1,21 @@
+num = @{ int ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ int)? }
+    int = { ("+" | "-")? ~ ASCII_DIGIT+ }
+
+operation = _{ add | subtract | multiply | divide | power }
+    add      = { "+" }
+    subtract = { "-" }
+    multiply = { "*" }
+    divide   = { "/" }
+    power    = { "^" }
+
+bracket = _{ "(" | ")" | "[" | "]" | "{" | "}" }
+
+expr = { term ~ (operation ~ term)* }
+term = _{ num | bracketed_expr }
+
+// New rule for expressions enclosed in brackets
+bracketed_expr = { bracket ~ expr ~ bracket }
+
+calculation = _{ SOI ~ expr ~ EOI }
+
+WHITESPACE = _{ " " | "\t" }
